@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .quiz-container { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+    h1 { color: #4A90E2; margin-bottom: 1rem; }
+    button { margin: 0.5rem 0; padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; background: #4A90E2; color: white; width: 100%; }
+    button:hover { background: #357ABD; }
+    #score { margin-top: 1rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container">
+    <h1>Simple Quiz App</h1>
+    <div id="quiz">
+      <div id="question">Question text</div>
+      <div class="options">
+        <button class="option">Option 1</button>
+        <button class="option">Option 2</button>
+        <button class="option">Option 3</button>
+        <button class="option">Option 4</button>
+      </div>
+      <div id="score"></div>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "What does HTML stand for?", options: ["Hyper Text Markup Language", "Hot Text Markup Language", "Hyperlinks Text Mark Language", "Hyper Tool Markup Language"], answer: 0 },
+      { question: "What does CSS stand for?", options: ["Cascading Style Sheets", "Creative Style System", "Computer Style Sheets", "Colorful Style Sheets"], answer: 0 },
+      { question: "Which language is used for interactive web pages?", options: ["Python", "JavaScript", "HTML", "CSS"], answer: 1 },
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.querySelectorAll('.option');
+    const scoreEl = document.getElementById('score');
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.forEach((btn, i) => btn.textContent = q.options[i]);
+      scoreEl.textContent = `Score: ${score}`;
+    }
+
+    optionsEl.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        if(i === quizData[currentQuestion].answer) score++;
+        currentQuestion++;
+        if(currentQuestion < quizData.length) {
+          loadQuestion();
+        } else {
+          questionEl.textContent = "Quiz Completed!";
+          document.querySelector('.options').style.display = 'none';
+          scoreEl.textContent = `Final Score: ${score}/${quizData.length}`;
+        }
+      });
+    });
+
+    loadQuestion();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Finder</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
+    h1 { color: #4A90E2; margin-bottom: 1rem; }
+    input, button { padding: 0.5rem; margin: 0.5rem; }
+    button { background: #4A90E2; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #357ABD; }
+    .recipe { background: white; padding: 1rem; border-radius: 8px; margin: 0.5rem 0; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .recipe h3 { margin-bottom: 0.5rem; color: #4A90E2; }
+    .recipe p { margin: 0.2rem 0; }
+  </style>
+</head>
+<body>
+
+  <h1>Recipe Finder</h1>
+  <input type="text" id="dish" placeholder="Enter a dish (e.g., pasta)">
+  <button onclick="findRecipe()">Search</button>
+
+  <div id="recipes"></div>
+
+  <script>
+    async function findRecipe() {
+      const dish = document.getElementById('dish').value.trim();
+      const recipesDiv = document.getElementById('recipes');
+      recipesDiv.innerHTML = '';
+      if(!dish) return alert('Please enter a dish name');
+
+      // Using free recipe API from themealdb.com
+      try {
+        const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${dish}`);
+        const data = await response.json();
+        if(!data.meals) {
+          recipesDiv.innerHTML = '<p>No recipes found.</p>';
+          return;
+        }
+
+        data.meals.forEach(meal => {
+          const div = document.createElement('div');
+          div.className = 'recipe';
+          div.innerHTML = `
+            <h3>${meal.strMeal}</h3>
+            <p><strong>Category:</strong> ${meal.strCategory}</p>
+            <p><strong>Area:</strong> ${meal.strArea}</p>
+            <a href="${meal.strSource || '#'}" target="_blank">View Recipe</a>
+          `;
+          recipesDiv.appendChild(div);
+        });
+      } catch(err) {
+        recipesDiv.innerHTML = '<p>Error fetching recipes.</p>';
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>
